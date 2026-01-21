@@ -1,41 +1,34 @@
 package com.scandoc.controller;
 
 import com.scandoc.model.Documento;
-import com.scandoc.repository.DocumentoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.scandoc.service.DocumentoService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 /**
- * Clase controladora para gestionar las peticiones web de documentos.
- * Utiliza Spring MVC para exponer servicios REST.
- * @author FELIPE
- * @version 1.0
+ * API REST para la gestión de documentos.
+ * Expone los endpoints requeridos para la evidencia AA5-EV03.
  */
 @RestController
-@RequestMapping("/api/documentos") // Ruta principal del módulo
+@RequestMapping("/api/documentos")
+@CrossOrigin(origins = "*") // Permite conexión con el frontend
 public class DocumentoController {
 
-    @Autowired // Spring "inyecta" el repositorio automáticamente aquí
-    private DocumentoRepository documentoRepository;
+    private final DocumentoService documentoService;
 
-    /**
-     * Método para obtener la lista de todos los documentos.
-     * @return Lista de objetos Documento
-     */
-    @GetMapping
-    public List<Documento> listarTodos() {
-        return documentoRepository.findAll();
+    public DocumentoController(DocumentoService documentoService) {
+        this.documentoService = documentoService;
     }
 
-    /**
-     * Método para registrar un nuevo documento en el sistema.
-     * @param documento Objeto documento enviado desde la web
-     * @return El documento guardado con su ID generado
-     */
-    @PostMapping
-    public Documento guardar(@RequestBody Documento documento) {
-        return documentoRepository.save(documento);
+    // Endpoint para registrar: POST http://localhost:8080/api/documentos/registrar
+    @PostMapping("/registrar")
+    public String registrar(@RequestBody Documento nuevoDoc) {
+        return documentoService.guardar(nuevoDoc);
+    }
+
+    // Endpoint para listar: GET http://localhost:8080/api/documentos/todos
+    @GetMapping("/todos")
+    public List<Documento> listar() {
+        return documentoService.listarTodo();
     }
 }
